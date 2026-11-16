@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}Blogger{% endblock %}</title>
+
+    <meta name="theme-color" content="#10121c">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <script>
+        const savedTheme = localStorage.getItem("blogger-theme");
+
+        document.documentElement.dataset.theme =
+            savedTheme ||
+            (matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light");
+    </script>
+
+    <link rel="stylesheet"
+          href="{% static 'blog/css/style.css' %}">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="container header-inner">
+
+            <a href="{% url 'home' %}" class="brand">
+                <span class="brand-icon">B</span>
+                <span>Blogger<span class="brand-dot">.</span></span>
+            </a>
+
+            <nav class="header-actions">
+                <a href="{% url 'home' %}"
+                   class="nav-link">
+                    Explore
+                </a>
+
+                <button type="button"
+                        class="theme-toggle"
+                        id="themeToggle"
+                        aria-label="Toggle dark mode"
+                        title="Toggle theme">
+                    <span id="themeIcon">☾</span>
+                </button>
+
+                <a href="{% url 'add_post' %}"
+                   class="btn btn-primary nav-create">
+                    <span>＋</span> Write a post
+                </a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <span class="footer-brand">Blogger<span>.</span></span>
+            <p>A little space for big ideas.</p>
+            <span>© 2026 Blogger</span>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById("themeToggle");
+        const themeIcon = document.getElementById("themeIcon");
+
+        function updateThemeIcon() {
+            themeIcon.textContent =
+                document.documentElement.dataset.theme === "dark"
+                    ? "☀"
+                    : "☾";
+        }
+
+        updateThemeIcon();
+
+        themeToggle.addEventListener("click", () => {
+            const current = document.documentElement.dataset.theme;
+            const next = current === "dark" ? "light" : "dark";
+
+            document.documentElement.dataset.theme = next;
+            localStorage.setItem("blogger-theme", next);
+            updateThemeIcon();
+        });
+    </script>
+
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

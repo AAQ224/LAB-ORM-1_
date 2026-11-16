@@ -1,0 +1,98 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Write a Story | Blogger{% endblock %}
+
+{% block content %}
+
+<section class="editor-section">
+    <div class="editor-container">
+
+        <a href="{% url 'home' %}" class="back-link">
+            ← Back to stories
+        </a>
+
+        <div class="editor-header">
+            <span class="eyebrow">THE CREATIVE CORNER</span>
+            <h1>Write something <em>great.</em></h1>
+            <p>Every idea deserves a place to grow.</p>
+        </div>
+
+        <form method="POST" class="editor-card">
+
+            {% csrf_token %}
+
+            <div class="editor-topbar">
+                <div class="editor-status">
+                    <span class="live-dot"></span>
+                    NEW STORY
+                </div>
+                <span>YOUR CREATIVE SPACE ✦</span>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="field-group">
+                <div class="field-label-row">
+                    <label for="{{ form.title.id_for_label }}">
+                        Story title
+                    </label>
+                    <small><span id="titleCount">0</span> / 2048</small>
+                </div>
+
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+
+            <div class="field-group">
+                <label for="{{ form.content.id_for_label }}">
+                    Your story
+                </label>
+
+                {{ form.content }}
+                {{ form.content.errors }}
+            </div>
+
+            <div class="editor-footer">
+                <span class="editor-hint">
+                    ✦ Make your words count.
+                </span>
+
+                <div class="editor-buttons">
+                    <a href="{% url 'home' %}"
+                       class="btn btn-ghost">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Publish story ↗
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const titleInput = document.getElementById("id_title");
+    const titleCount = document.getElementById("titleCount");
+
+    if (titleInput && titleCount) {
+        function updateCounter() {
+            titleCount.textContent = titleInput.value.length;
+        }
+
+        titleInput.addEventListener("input", updateCounter);
+        updateCounter();
+    }
+</script>
+{% endblock %}

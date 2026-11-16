@@ -1,0 +1,64 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.title }} | Blogger{% endblock %}
+
+{% block content %}
+
+<section class="article-section">
+    <div class="article-container">
+
+        <a href="{% url 'home' %}" class="back-link">
+            ← Back to stories
+        </a>
+
+        <div class="article-header">
+            <div class="article-category">
+                <span>✦</span> BLOGGER JOURNAL
+            </div>
+
+            <h1 dir="auto">{{ post.title }}</h1>
+
+            <div class="article-meta">
+                <div class="author-avatar">B</div>
+                <div class="author-info">
+                    <strong>Blogger Editorial</strong>
+                    <span>
+                        {{ post.published_at|date:"F d, Y" }}
+                        ·
+                        {{ post.published_at|time:"h:i A" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="article-banner">
+            <div class="banner-orb"></div>
+            <span>WORDS THAT MATTER.</span>
+            <strong>✳</strong>
+        </div>
+
+        <article class="article-content" dir="auto">
+            {{ post.content|linebreaks }}
+        </article>
+
+        <div class="article-end">
+            <span>✦</span>
+            <p>Thanks for reading.</p>
+        </div>
+
+        <div class="article-footer">
+            <div>
+                <strong>Enjoyed this story?</strong>
+                <p>There is always more to discover.</p>
+            </div>
+
+            <a href="{% url 'home' %}"
+               class="btn btn-primary">
+                Explore more →
+            </a>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,200 +1,97 @@
-{% extends "blog/base.html" %}
 
-{% block title %}Discover Stories | Blogger{% endblock %}
+{% extends "blog/base.html" %}
+{% load blog_extras %}
+
+{% block title %}Home | Blogger{% endblock %}
 
 {% block content %}
 
-<section class="hero-section">
-    <div class="container hero-layout">
+<section class="blog-container">
 
-        <div class="hero-copy">
-            <div class="hero-label">
-                <span class="live-dot"></span>
-                A SPACE FOR STORIES & IDEAS
-            </div>
-
+    <div class="page-heading">
+        <div>
             <h1>
-                Every story<br>
-                <span>starts somewhere.</span>
+                <span data-i18n="latest">Latest Stories</span><span>.</span>
             </h1>
 
-            <p>
-                Thoughts, experiences, and ideas worth sharing.
-                Discover something new, or write your own story.
+            <p data-i18n="description">
+                Discover the latest posts and ideas.
             </p>
-
-            <div class="hero-actions">
-                <a href="#latest" class="btn btn-primary btn-large">
-                    Explore stories
-                    <span>↗</span>
-                </a>
-
-                <a href="{% url 'add_post' %}"
-                   class="btn btn-ghost">
-                    Start writing →
-                </a>
-            </div>
-
-            <div class="hero-stats">
-                <strong>{{ total_posts|stringformat:"02d" }}</strong>
-                <span>Published stories and counting</span>
-            </div>
         </div>
 
-        <div class="hero-art" aria-hidden="true">
-            <div class="art-glow"></div>
-            <div class="art-orbit orbit-one"></div>
-            <div class="art-orbit orbit-two"></div>
-            <div class="art-center">B<span>.</span></div>
-            <span class="art-spark spark-one">✳</span>
-            <span class="art-spark spark-two">✦</span>
-            <div class="art-caption">IDEAS DESERVE TO BE SHARED</div>
-        </div>
-
+        <a href="{% url 'add_post' %}" class="blog-btn">
+            <span>+</span>
+            <span data-i18n="write">Write a post</span>
+        </a>
     </div>
-</section>
 
-<section class="stories-section" id="latest">
-    <div class="container">
+    <div class="blog-grid">
 
-        <div class="section-top">
-            <div>
-                <span class="eyebrow">THE JOURNAL</span>
-                <h2>Fresh perspectives<span>.</span></h2>
-                <p>Explore the latest stories from Blogger.</p>
-            </div>
+        {% for post in posts %}
 
-            <span class="post-counter">
-                {{ total_posts }} Published
-            </span>
-        </div>
+        <article class="blog-card">
 
-        {% if featured_post %}
+            <a href="{% url 'post_detail' post.pk %}">
+                {% if post.image %}
+                    <img
+                        src="{{ post.image.url }}"
+                        alt="{{ post.title }}"
+                        class="blog-image"
+                        loading="lazy">
+                {% else %}
+                    <img
+                        src="/media/default/default-cover.jpg"
+                        alt="Default cover"
+                        class="blog-image"
+                        loading="lazy">
+                {% endif %}
+            </a>
 
-        <div class="featured-label">
-            <span>✦</span>
-            FEATURED STORY
-        </div>
+            <div class="blog-card-content">
 
-        <article class="featured-card">
+                <span class="blog-date">
+                    {{ post.published_at|date:"F d, Y" }}
+                    ·
+                    {{ post.published_at|time:"h:i A" }}
+                </span>
 
-            <div class="featured-visual">
-                <div class="visual-grid"></div>
-                <div class="visual-circle"></div>
-                <span class="visual-symbol">✳</span>
-                <span class="visual-bottom">THE LATEST STORY / 001</span>
-            </div>
+                <h2 dir="auto">
+                    {{ post.title }}
+                </h2>
 
-            <div class="featured-body">
-
-                <div class="post-meta">
-                    <span class="meta-pill">Latest</span>
-                    <span>
-                        {{ featured_post.published_at|date:"M d, Y" }}
-                    </span>
-                    <span class="meta-dot">·</span>
-                    <span>
-                        {{ featured_post.published_at|time:"h:i A" }}
-                    </span>
-                </div>
-
-                <h3 dir="auto">{{ featured_post.title }}</h3>
-
-                <p class="featured-excerpt" dir="auto">
-                    {{ featured_post.content|truncatechars:280 }}
+                <p dir="auto">
+                    {{ post.content|post_excerpt:180 }}
                 </p>
 
-                <a href="{% url 'post_detail' featured_post.pk %}"
-                   class="read-more">
-                    Read full story
-                    <span>↗</span>
+                <a href="{% url 'post_detail' post.pk %}"
+                   class="blog-link">
+                    <span data-i18n="readMore">Read More</span>
+                    <span aria-hidden="true">→</span>
                 </a>
 
             </div>
 
         </article>
 
-        {% if posts %}
+        {% empty %}
 
-        <div class="more-stories-heading">
-            <h3>More stories</h3>
-            <span>Keep exploring ↓</span>
-        </div>
+        <div class="blog-empty">
+            <h2 data-i18n="noPosts">No posts yet!</h2>
 
-        <div class="posts-grid">
+            <p data-i18n="noPostsDescription">
+                Start by adding your first post.
+            </p>
 
-            {% for post in posts %}
-
-            <article class="post-card">
-
-                <div class="card-decoration">
-                    <span class="card-mark">✦</span>
-                    <span class="card-index">
-                        STORY {{ forloop.counter|stringformat:"02d" }}
-                    </span>
-                </div>
-
-                <div class="card-body">
-
-                    <div class="post-meta">
-                        <span>{{ post.published_at|date:"M d, Y" }}</span>
-                        <span class="meta-dot">·</span>
-                        <span>{{ post.published_at|time:"h:i A" }}</span>
-                    </div>
-
-                    <h3 dir="auto">{{ post.title }}</h3>
-
-                    <p class="post-excerpt" dir="auto">
-                        {{ post.content|truncatechars:175 }}
-                    </p>
-
-                    <a href="{% url 'post_detail' post.pk %}"
-                       class="read-more">
-                        Read story
-                        <span>↗</span>
-                    </a>
-
-                </div>
-            </article>
-
-            {% endfor %}
-
-        </div>
-
-        {% endif %}
-
-        {% else %}
-
-        <div class="empty-state">
-            <span class="empty-icon">✎</span>
-            <h3>Your story starts here.</h3>
-            <p>No stories have been published yet.</p>
-
-            <a href="{% url 'add_post' %}" class="btn btn-primary">
-                Write the first story
+            <a href="{% url 'add_post' %}" class="blog-btn">
+                <span>+</span>
+                <span data-i18n="write">Write a post</span>
             </a>
         </div>
 
-        {% endif %}
+        {% endfor %}
 
     </div>
-</section>
 
-<section class="cta-section">
-    <div class="container">
-        <div class="cta-inner">
-            <div>
-                <span class="eyebrow">YOUR VOICE MATTERS</span>
-                <h2>Have something to say?</h2>
-                <p>Your next great story is one click away.</p>
-            </div>
-
-            <a href="{% url 'add_post' %}"
-               class="btn btn-light">
-                Write your story ↗
-            </a>
-        </div>
-    </div>
 </section>
 
 {% endblock %}
